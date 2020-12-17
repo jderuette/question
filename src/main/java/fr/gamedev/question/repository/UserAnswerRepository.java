@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.gamedev.question.repository;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -13,6 +10,6 @@ import fr.gamedev.question.data.UserAnswer;
  *
  */
 @RepositoryRestResource(collectionResourceRel = "userAnswer", path = "userAnswer")
-public interface UserAnswerRepository extends PagingAndSortingRepository<UserAnswer, Long>{
+public interface UserAnswerRepository extends PagingAndSortingRepository<UserAnswer, Long> {
 
 }

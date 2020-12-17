@@ -1,6 +1,3 @@
-/**
- * 
- */
 package fr.gamedev.question.greeting;
 
 /**
@@ -8,22 +5,33 @@ package fr.gamedev.question.greeting;
  *
  */
 public class Greeting {
-	
-	private final long id;
-	private final String content;
 
-	public Greeting(long id, String content) {
-		this.id = id;
-		this.content = content;
-	}
+    /** Greeting id.*/
+    private final long id;
+    /** Greeting message.*/
+    private final String content;
 
-	public long getId() {
-		return id;
-	}
+    /** new salutation.
+     * @param newId the ID
+     * @param newContent the content
+     */
+    public Greeting(final long newId, final String newContent) {
+        this.id = newId;
+        this.content = newContent;
+    }
 
-	public String getContent() {
-		return content;
-	}
+    /**
+     * @return the id
+     */
+    public long getId() {
+        return id;
+    }
 
+    /**
+     * @return the content
+     */
+    public String getContent() {
+        return content;
+    }
 
 }
