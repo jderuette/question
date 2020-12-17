@@ -50,6 +50,12 @@
 		<property name="message" value="Line has trailing spaces." />
 	</module>
 
+	<!-- Checks for Size Violations. -->
+	<!-- See http://checkstyle.sf.net/config_sizes.html -->
+	<module name="LineLength">
+		<property name="max" value="120" />
+	</module>
+
 	<!-- Checks for Headers -->
 	<!-- See http://checkstyle.sf.net/config_header.html -->
 	<!-- <module name="Header"> -->
@@ -58,12 +64,9 @@
 	<!-- </module> -->
 
 	<module name="TreeWalker">
-	
-		<!-- Checks for Size Violations. -->
-		<!-- See http://checkstyle.sf.net/config_sizes.html -->
-		<!-- <module name="LineLength">
-			<property name="max" value="120" />
-		</module> -->
+		<!-- see : https://checkstyle.sourceforge.io/config_filters.html#SuppressWarningsFilter_Examples -->
+		<module name="SuppressWarningsHolder" />
+
 		<property name="tabWidth" value="4" />
 
 		<!-- Checks for Javadoc comments. -->
@@ -152,4 +155,6 @@
 		<module name="TodoComment" />
 		<module name="UpperEll" />
 	</module>
+	<!-- see : https://checkstyle.sourceforge.io/config_filters.html#SuppressWarningsFilter_Examples -->
+	<module name="SuppressWarningsFilter" />
 </module>
