@@ -3,7 +3,8 @@ package fr.gamedev.question;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,44 +50,37 @@ public class ResponseController {
      * @param answer the user Answer.
      * @param userId the user ID.
      * @return Indication about correctness of the answer provided.*/
-    @GetMapping("/response")
-    public String answer(@RequestParam final long questionId, @RequestParam final Boolean answer,
+    @PostMapping(value = "/response", produces = "application/hal+json")
+    public UserAnswer answer(@RequestParam final long questionId, @RequestParam final Boolean answer,
             @RequestParam final long userId) {
 
-        String response = "Erreur technique";
+        UserAnswer response = null;
 
         Optional<Question> question = questionRepo.findById(questionId);
+        Assert.isTrue(question.isPresent(), "La question n'eiste pas !");
 
-        if (question.isPresent()) {
+        Optional<Answer> expectedAnswer = answerRepo.findByQuestion(question.get());
+        Assert.isTrue(expectedAnswer.isPresent(),
+                "Impossible de vérifier votre réponse. Pas de bonne réponse de configurée pour la question !");
 
-            Optional<Answer> expectedAnswer = answerRepo.findByQuestion(question.get());
+        Optional<User> user = userRepo.findById(userId);
+        Assert.isTrue(user.isPresent(), "Cet utilisateur n'existe pas !");
 
-            if (expectedAnswer.isPresent()) {
-                UserAnswer userAnswer = new UserAnswer();
+        UserAnswer userAnswer = new UserAnswer();
+        userAnswer.setUser(user.get());
+        userAnswer.setAnswer(expectedAnswer.get());
 
-                Optional<User> user = userRepo.findById(userId);
-
-                if (user.isPresent()) {
-
-                    userAnswer.setUser(user.get());
-                    userAnswer.setAnswer(expectedAnswer.get());
-
-                    if (expectedAnswer.get().getCorrectAnswer() == answer) {
-                        //Ajouter des points
-                        userAnswer.setPoints(POINT_FOR_CORRECT_ANSWER);
-                        response = "Bravo ! vous avez trouvé ! ";
-                    } else {
-                        //Ne pas ajouter de points
-                        userAnswer.setPoints(POINT_FOR_BAD_ANSWER);
-                        response = "Oops ! Ca n'est pas correcte";
-                    }
-
-                    userAnswerRepo.save(userAnswer);
-
-                }
-            }
-
+        if (expectedAnswer.get().getCorrectAnswer() == answer) {
+            //Ajouter des points
+            userAnswer.setPoints(POINT_FOR_CORRECT_ANSWER);
+            //response = "Bravo ! vous avez trouvé ! ";
+        } else {
+            //Ne pas ajouter de points
+            userAnswer.setPoints(POINT_FOR_BAD_ANSWER);
+            //response = "Oops ! Ca n'est pas correcte";
         }
+
+        response = userAnswerRepo.save(userAnswer);
 
         return response;
     }
