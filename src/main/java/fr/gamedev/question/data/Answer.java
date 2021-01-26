@@ -26,7 +26,7 @@ public class Answer {
     /** the question this answer ... answer.*/
     @OneToOne
     private Question question;
-    /** the corect value for the linked question.*/
+    /** the correct value for the linked question.*/
     private Boolean correctAnswer;
 
     /**
