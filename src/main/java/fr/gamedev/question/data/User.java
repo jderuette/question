@@ -1,8 +1,11 @@
 package fr.gamedev.question.data;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -27,6 +30,10 @@ public class User {
     private String lastName;
     /**user First name.*/
     private String firstName;
+
+    /** User preferences about questions type (tags).*/
+    @ManyToMany
+    private List<Tag> interests;
 
     /**
      * @return the id
@@ -82,6 +89,20 @@ public class User {
      */
     public void setFirstName(final String theFirstName) {
         this.firstName = theFirstName;
+    }
+
+    /**
+     * @return the interests
+     */
+    public List<Tag> getInterests() {
+        return interests;
+    }
+
+    /**
+     * @param newInterests the interests to set
+     */
+    public void setInterests(final List<Tag> newInterests) {
+        this.interests = newInterests;
     }
 
 }
