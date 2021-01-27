@@ -9,13 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.gamedev.question.data.Answer;
-import fr.gamedev.question.data.Question;
-import fr.gamedev.question.data.User;
 import fr.gamedev.question.data.UserAnswer;
-import fr.gamedev.question.repository.AnswerRepository;
-import fr.gamedev.question.repository.QuestionRepository;
 import fr.gamedev.question.repository.UserAnswerRepository;
-import fr.gamedev.question.repository.UserRepository;
 
 /**
  * @author djer1
@@ -29,58 +24,52 @@ public class ResponseController {
     /** NB Points for a bad answer. */
     private static final Integer POINT_FOR_BAD_ANSWER = 0;
 
-    /** (correct) Answer Repository. */
-    @Autowired
-    private AnswerRepository answerRepo;
-
     /** Answer provided by users (and points earned) repository. */
     @Autowired
     private UserAnswerRepository userAnswerRepo;
 
-    /** Questions repository. */
-    @Autowired
-    private QuestionRepository questionRepo;
-
-    /** User repository.*/
-    @Autowired
-    private UserRepository userRepo;
-
     /** Collect a user answer for a specific question.
-     * @param questionId : the id of the question answered.
+     * @param userAnswerId : the id of the question answered.
      * @param answer the user Answer.
-     * @param userId the user ID.
      * @return Indication about correctness of the answer provided.*/
     @PostMapping(value = "/response", produces = "application/hal+json")
-    public UserAnswer answer(@RequestParam final long questionId, @RequestParam final Boolean answer,
-            @RequestParam final long userId) {
+    public UserAnswer answer(@RequestParam final long userAnswerId, @RequestParam final Boolean answer) {
 
         UserAnswer response = null;
 
-        Optional<Question> question = questionRepo.findById(questionId);
-        Assert.isTrue(question.isPresent(), "La question n'eiste pas !");
+        Optional<UserAnswer> askedQuestion = userAnswerRepo.findById(userAnswerId);
 
-        Optional<Answer> expectedAnswer = answerRepo.findByQuestion(question.get());
-        Assert.isTrue(expectedAnswer.isPresent(),
-                "Impossible de vérifier votre réponse. Pas de bonne réponse de configurée pour la question !");
+        Assert.isTrue(askedQuestion.isPresent(), "Réponse ignorée : la question ne vous à pas été posée !");
+        Assert.isTrue(askedQuestion.get().getPoints() == null,
+                "Réponse ignorée : vous avez déja répondu à cette question.");
 
-        Optional<User> user = userRepo.findById(userId);
-        Assert.isTrue(user.isPresent(), "Cet utilisateur n'existe pas !");
+        Answer expectedAnswer = askedQuestion.get().getAnswer();
 
-        UserAnswer userAnswer = new UserAnswer();
-        userAnswer.setUser(user.get());
-        userAnswer.setAnswer(expectedAnswer.get());
+        if (expectedAnswer.getCorrectAnswer() == answer) {
+            //Si un utilisateur a deja répondu correctement à la question,
+            // il ne gagne que 50% des points gagné précédement.
+            //S'il répond Faux, il gagne 0 points et cela n'a pas d'impacts sur les calculs futurs.
 
-        if (expectedAnswer.get().getCorrectAnswer() == answer) {
+            Optional<UserAnswer> lastUserAnswer = userAnswerRepo
+                    .findTopByAnswerQuestionAndUserAndPointsNotNullAndPointsIsGreaterThanOrderByPoints(
+                            askedQuestion.get().getAnswer().getQuestion(), askedQuestion.get().getUser(), 0);
+
+            Integer nbPoints = POINT_FOR_CORRECT_ANSWER;
+            if (lastUserAnswer.isPresent()) {
+                Integer lastEarnedPoints = lastUserAnswer.get().getPoints();
+                nbPoints = lastEarnedPoints / 2;
+            }
+
             //Ajouter des points
-            userAnswer.setPoints(POINT_FOR_CORRECT_ANSWER);
+            askedQuestion.get().setPoints(nbPoints);
             //response = "Bravo ! vous avez trouvé ! ";
         } else {
             //Ne pas ajouter de points
-            userAnswer.setPoints(POINT_FOR_BAD_ANSWER);
+            askedQuestion.get().setPoints(POINT_FOR_BAD_ANSWER);
             //response = "Oops ! Ca n'est pas correcte";
         }
 
-        response = userAnswerRepo.save(userAnswer);
+        response = userAnswerRepo.save(askedQuestion.get());
 
         return response;
     }

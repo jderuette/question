@@ -29,7 +29,7 @@ public class UserAnswer {
     @ManyToOne
     private Answer answer;
     /** Points earn by user for this answer. */
-    private long points;
+    private Integer points;
 
     /**
      * @return the id
@@ -62,14 +62,14 @@ public class UserAnswer {
     /**
      * @return the points
      */
-    public long getPoints() {
+    public Integer getPoints() {
         return points;
     }
 
     /**
      * @param newPoints the points to set
      */
-    public void setPoints(final long newPoints) {
+    public void setPoints(final Integer newPoints) {
         this.points = newPoints;
     }
 
