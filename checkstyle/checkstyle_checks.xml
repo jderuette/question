@@ -23,7 +23,7 @@
 
 	<module name="SuppressionFilter">
 		<property name="file"
-			value="checkstyle/checkstyle-suppressions.xml" />
+			value="${project_loc}/checkstyle/checkstyle-suppressions.xml" />
 		<property name="optional" value="false" />
 	</module>
 
@@ -63,16 +63,17 @@
 	<!-- <property name="fileExtensions" value="java"/> -->
 	<!-- </module>  -->
 
+	<!-- Checks for Size Violations. -->
+	<!-- See http://checkstyle.sf.net/config_sizes.html -->
+	<module name="LineLength">
+		<property name="max" value="120" />
+	</module>
+
+
 	<module name="TreeWalker">
 		<!-- see : https://checkstyle.sourceforge.io/config_filters.html#SuppressWarningsFilter_Examples -->
 		<module name="SuppressWarningsHolder" />
 
-		<!-- Checks for Size Violations. -->
-		<!-- See http://checkstyle.sf.net/config_sizes.html -->
-		<module name="LineLength">
-			<property name="max" value="120" />
-		</module>
-		
 		<property name="tabWidth" value="4" />
 
 		<!-- Checks for Javadoc comments. -->
