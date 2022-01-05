@@ -19,7 +19,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<pmdVersion>6.4.0</pmdVersion>
-		<checkstyleVersion>6.18</checkstyleVersion>
+		<checkstyleVersion>8.35</checkstyleVersion>
+		<my_project_dir>D:\Users\djer1\git\gameDev\question</my_project_dir>
 	</properties>
 
 
@@ -96,7 +97,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>3.0.0</version>
+					<version>3.1.2</version>
 					<dependencies>
 						<dependency>
 							<groupId>com.puppycrawl.tools</groupId>
@@ -141,10 +142,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>3.0.0</version>
 				<configuration>
 					<configLocation>checkstyle/checkstyle_checks.xml</configLocation>
 					<suppressionsLocation>checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+					<propertyExpansion>project_loc=${my_project_dir}</propertyExpansion>
 					<encoding>${project.build.sourceEncoding}</encoding>
 					<sourceDirectories>${basedir}</sourceDirectories>
 					<includes>**/*</includes>
