@@ -16,7 +16,7 @@
 		<javadoc.source.version>8</javadoc.source.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<pmdVersion>6.46.0</pmdVersion>
+		<pmdVersion>6.4.0</pmdVersion>
 		<checkstyleVersion>8.35</checkstyleVersion>
 		<my_project_dir>C:\Users\djer1\git\question</my_project_dir>
 	</properties>
